@@ -38,7 +38,7 @@
 
     <div class="row">
 
-        @foreach ($articles as $article)           {{-- Veio da HomeController "articles" da linha 12 --}}
+        @foreach ($articles as $article)           {{-- Veio da HomeController "articles" da linha 12 ou 13 ou 14 --}}
             
         <div class="col col-sm-12 col-md-4">
             <div class="card">
@@ -46,8 +46,12 @@
                     alt="...">
                 <div class="card-body">
                     <h5 class="card-title">{{$article->title}}</h5>
-                    <p class="card-text">{{$article->preiew}}</p>
-                    <a href="/artigo/{{$article->id}}" class="btn btn-primary">LER AGORA</a>
+                    <p class="card-text">{{substr($article->preview, 0, 100)}}</p>                  {{-- Comeca do zero e vai até 100 caracteres de limite --}}
+                </div>
+
+                <div class="card-action">    
+                    <small>{{date("d/m/Y", strtotime($article->date))}}</small>
+                    <a href="/artigo/{{$article->id}}/{{Illuminate\support\Str::slug($article->title)}}" class="btn btn-primary">LER AGORA</a>  {{-- Illuminate\support\Str::slug($article->title) // Vai fazer o titulo ficar na url da noticia e ajuda google a indexar--}}
                 </div>
             </div>
         </div>
