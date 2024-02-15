@@ -7,11 +7,29 @@ use Illuminate\Http\Request;
 
 class ArticlesController extends Controller
 {
+    // Fazer a pesquisa --------------------------
+
     public function index(){
+        $search = request("search");                        //sEARCH vem do name no imput de nav.blade
+        if ($search) {
+            $articles = Articles::where([
+                ["title", "like", "%{$search}%"]
+            ])->paginate(10);
+        } else{
+
+            $articles = Articles::paginate(10);
+        }
+
+
+    // -------------------------------------------
+
+
         return view("blog/articles", [
-            "articles" => Articles::paginate(10)
+            "articles" => $articles,
+            "search" => $search
         ]);
     }
+
 
     public function detail($id){
         $article = Articles::where("id", $id)->firstOrFail();                                           //definiu a variavel $article

@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\admin\DashboardController;
+use App\Http\Controllers\admin\LoginController;
 use App\Http\Controllers\ArticlesController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
@@ -21,3 +23,18 @@ Route::get('/', [HomeController::class, "index"]);      //homecontroller é o co
 Route::get('/artigos', [ArticlesController::class, "index"]);                   
 Route::get('/artigo/{id}/{permalink}', [ArticlesController::class, "detail"]);      //article.blade.php
 
+
+
+
+//=========================================================================================================================================================================
+//                                                                         PAINEL DE ADMINISTRAÇÃO
+//=========================================================================================================================================================================
+
+Route::view("/admin/login", "admin.login.form")->name("login.form");
+
+Route::post("/admin/auth", [LoginController::class, "auth"])->name("login.auth");
+
+Route::get("/admin/logout", [LoginController::class, "logout"]);
+
+// Route::get("/admin", [DashboardController::class, "index"]);
+Route::get("/admin", [DashboardController::class, "index"])->middleware("validalogin"); // ValidaLogin vem do kernel e do middleware
