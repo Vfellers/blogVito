@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\admin\ArticlesAdmController;
 use App\Http\Controllers\admin\DashboardController;
 use App\Http\Controllers\admin\LoginController;
 use App\Http\Controllers\ArticlesController;
@@ -34,7 +35,17 @@ Route::view("/admin/login", "admin.login.form")->name("login.form");
 
 Route::post("/admin/auth", [LoginController::class, "auth"])->name("login.auth");
 
-Route::get("/admin/logout", [LoginController::class, "logout"]);
+// Route::get("/admin/logout", [LoginController::class, "logout"]);
 
 // Route::get("/admin", [DashboardController::class, "index"]);
-Route::get("/admin", [DashboardController::class, "index"])->middleware("validalogin"); // ValidaLogin vem do kernel e do middleware
+// Route::get("/admin", [DashboardController::class, "index"])->middleware("validalogin");     // ValidaLogin vem do kernel e do middleware
+
+//Grupo de middleware pra sempre usar o login nessas paginas
+Route::middleware("validalogin")->group(function(){
+
+    Route::get("/admin", [DashboardController::class, "index"]);                //Login de cima eu trouxe pra baixo pra por no grupode middleware, o mesmo pro logout
+
+    Route::resource("/admin/artigos", ArticlesAdmController::class);
+
+    Route::get("/admin/logout", [LoginController::class, "logout"]);
+});
