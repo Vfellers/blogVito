@@ -8,7 +8,11 @@
         </div>
         <div class="col">
             <div class="d-flex justify-content-end">
+
+                @can("deleta-artigo", 1)                                                        {{-- Autorização pra aparecer o botao criar só para o usuario nivel 1 --}}
                 <a href="{{route("artigos.create")}}" class="btn btn-success">Adicionar</a>
+                @endcan
+                
             </div>
         </div>
     </div>
@@ -48,15 +52,22 @@
                             <td> {{date("d/m/Y", strtotime($a->date))}} </td>
                             <td> <img src="/upload/{{$a->image}}" height="50px" > </td>
                             <td> 
+
+
+                                {{-- Qual dos usuarios tem permissao pra deletar --}}
+                                @can("deleta-artigo", 1)
+                                
                                 {{-- Editar --}}
                                 <a href="{{route("artigos.edit", $a->id)}}" class="btn btn-primary" >Editar</a> 
-
                                 {{-- Deletar --}}
                                 <a href="#" class="btn btn-danger" onclick="deleteRegistro('delete-form')">Deletar</a>                 {{-- Trouxe a função deleteRegistro quepuxa o onclick // Botou o delete-form que tirou de baixo--}}
                                 <form id="delete-form" class="d-none" action="{{route("artigos.destroy", $a->id)}}" method="POST">     {{-- Destroy é metodo do articlesAdmController --}}
                                     @csrf
                                     @method("DELETE")
                                 </form>
+
+                                @endcan
+
                             </td>
                         </tr>
                     @endforeach

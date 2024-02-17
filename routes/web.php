@@ -4,6 +4,7 @@ use App\Http\Controllers\admin\ArticlesAdmController;
 use App\Http\Controllers\admin\DashboardController;
 use App\Http\Controllers\admin\LoginController;
 use App\Http\Controllers\ArticlesController;
+use App\Http\Controllers\EnviaEmailController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
@@ -48,4 +49,8 @@ Route::middleware("validalogin")->group(function(){
     Route::resource("/admin/artigos", ArticlesAdmController::class);
 
     Route::get("/admin/logout", [LoginController::class, "logout"]);
+
+
+    //Rota pra enviar email
+    Route::get("/admin/mail", [EnviaEmailController::class, "index"]);
 });

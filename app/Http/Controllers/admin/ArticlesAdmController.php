@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Articles;
 use App\Models\Categories;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ArticlesAdmController extends Controller
 {
@@ -24,6 +25,7 @@ class ArticlesAdmController extends Controller
      */
     public function create()
     {
+
         return view("admin/artigos/create", [
             "categorias" => Categories::all()
         ]);
@@ -78,7 +80,7 @@ class ArticlesAdmController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $article = new Articles;
+        $article = Articles::find($id);
         $article->title = $request->title;
         $article->preview = $request->preview;
         $article->author = $request->author;
@@ -86,13 +88,22 @@ class ArticlesAdmController extends Controller
         $article->from_categories = $request->from_categories;
 
         //upload imagem
-        if($request->hasFile("image") && $request->file("image")->isValid()){
+
+        $imgAtual = $article->image;
+
+        if($request->hasFile("image") && $request->file("image")->isValid()){      
+             
+            if(file_exists(public_path("upload/").$imgAtual)){                    //Deletar a imagem atual do banco se for trocar na edição 
+                unlink(public_path("upload/").$imgAtual);
+            }
+
             $name = strtotime("now").".".$request->image->extension();              //Nome que ele vai dar pra imagem, é um timestamp.jpg ou a extensão que a imagem tiver
             $request->image->move(public_path("upload"), $name);                    //criou a pasta upload em public, onde ficara as imagens (nosso esta como img)
             $article->image = $name;
         }
 
-        $article->findOrFail($id)->update($article->all());
+        $article->update();
+        return redirect("/admin/artigos")->with("success", "Registro Atualizado.");
     }
 
     /**
@@ -100,7 +111,15 @@ class ArticlesAdmController extends Controller
      */
     public function destroy(string $id)
     {
-        Articles::findOrFail($id)->delete();
+        $art = Articles::find($id);
+
+        //Verificar se existe imagem pra deletar
+        if(file_exists(public_path("upload/").$art->image)){
+            //deletar a imagem do banco no delete
+            unlink(public_path("upload/").$art->image);
+        }
+
+        $art->delete();
         return redirect("/admin/artigos")->with("success", "Registro Deletado.");
     }
 }
