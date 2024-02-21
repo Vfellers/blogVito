@@ -10,6 +10,36 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
+
+    /**
+    * @OA\Post(
+    *    path="/Auth",
+    *    tags={"Auth"},
+    *    summary="Get token of autentication",
+    *    description="Return tis bearer token",
+    *    @OA\Parameter(
+    *      name="email",
+    *      in="query",
+    *      required=true,
+    *    @OA\Schema(type="string")
+    *    ),
+    *
+    *    @OA\Parameter(
+    *     name="password",
+    *     in="query",
+    *     required=true,
+    *    @OA\Schema(type="string")
+    *    ),
+    *
+    *    @OA\Response(
+    *       response="200",
+    *       description="token autentication"
+    *    ),
+    *   
+    *  
+    *  )
+    */
+
     public function auth(Request $request){
         $user = User::where("email", $request->email)->first();
         
